@@ -1,11 +1,7 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-// import { render } from "@testing-library/react";
 import styles from './SearchForm.module.css';
 
-const initState = {
-  inputValue: '',
-};
 export default class Searchbar extends Component {
   static propTypes = {
     onSubmit: PropTypes.func.isRequired,
@@ -25,7 +21,7 @@ export default class Searchbar extends Component {
     const { onSubmit } = this.props;
     const { inputValue } = this.state;
     onSubmit(inputValue);
-    this.setState({ ...initState });
+    this.setState({ ...inputValue });
   };
 
   render() {
@@ -34,7 +30,7 @@ export default class Searchbar extends Component {
       <header className={styles.Searchbar}>
         <form className={styles.SearchForm} onSubmit={this.handleOnSubmit}>
           <button type="submit" className={styles.SearchForm_button}>
-            <span className={styles.SearchForm_button_label}>Search</span>
+            <span className={styles.SearchForm_buttonLabel}>Search</span>
           </button>
 
           <input

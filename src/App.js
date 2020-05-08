@@ -1,4 +1,3 @@
-/* eslint-disable react/state-in-constructor */
 import React, { Component } from 'react';
 import Button from './componеnts/Button/Button';
 import ImageGallery from './componеnts/ImageGallery/ImagеGallеry';
@@ -10,79 +9,71 @@ import styles from './styles.module.css';
 
 export default class App extends Component {
   state = {
-    allData: [],
+    gallery: [],
     page: 0,
     query: '',
     isLoading: false,
     isModal: false,
-    idLargeImageURL: '',
+    imgUrl: '',
   };
 
   componentDidUpdate(prevProps, prevState) {
     const { page, query } = this.state;
     if (prevState.page !== page || prevState.query !== query) {
-      if (query !== '') {
-        this.getDataByParams({ query, page });
-      }
+      this.getDataByParams({ query, page });
     }
   }
 
   getDataByParams = ({ query, page }) => {
-    const { allData } = this.state;
-    const scrollHeight = page > 1 ? document.documentElement.scrollHeight : 0;
+    const { gallery } = this.state;
     this.setState({ isLoading: true });
-    return (
-      getImages({ page, query })
-        .then(({ data }) =>
-          this.setState({ allData: [...allData, ...data.hits] }),
-        )
-        // .catch(error => alert(error));
-        .finally(() => {
-          this.setState({ isLoading: false });
-          window.scrollTo({
-            top: scrollHeight,
-            behavior: 'smooth',
-          });
-        })
-    );
+    return getImages({ page, query })
+      .then(({ data }) =>
+        this.setState({ gallery: [...gallery, ...data.hits] }),
+      )
+      .catch(error => {
+        // eslint-disable-next-line react/no-unused-state
+        this.setState({ error });
+        console.log(error);
+      })
+      .finally(() => {
+        this.setState({ isLoading: false });
+      });
   };
 
-  handleOnSubmit = e => {
-    this.setState({ allData: [], query: e, page: 1 });
+  handleSearch = e => {
+    this.setState({ gallery: [], query: e, page: 1 });
   };
 
   handleLoadMore = () => {
     const { page } = this.state;
     this.setState({ page: page + 1 });
+    window.scrollTo({
+      top: document.documentElement.scrollHeight,
+      behavior: 'smooth',
+    });
   };
 
-  openModal = e => {
-    this.setState({ isModal: true, idLargeImageURL: e.target.id });
+  openLargeImage = largeImgUrl => {
+    this.setState({ imgUrl: largeImgUrl });
+    this.closeModal();
   };
 
   closeModal = () => {
-    this.setState({ isModal: false });
-  };
-
-  getLargeImageURL = () => {
-    const { allData, isModal, idLargeImageURL } = this.state;
-    const element = allData.find(i => i.id === Number(idLargeImageURL));
-    return isModal ? element.largeImageURL : '';
+    this.setState(state => ({ isModal: !state.isModal }));
   };
 
   render() {
-    const { allData, isModal, isLoading } = this.state;
+    const { gallery, isModal, isLoading, imgUrl } = this.state;
     return (
       <div className={styles.App}>
-        <Searchbar onSubmit={this.handleOnSubmit} />
-        <ImageGallery data={allData} onClick={this.openModal} />
-        {isLoading && <Loader />}
-        {allData.length > 0 && <Button onClick={this.handleLoadMore} />}
-        {isModal && (
-          <Modal onClick={this.closeModal}>
-            <img src={this.getLargeImageURL()} alt="" />
-          </Modal>
+        <Searchbar onSubmit={this.handleSearch} />
+        {gallery.length > 0 && (
+          <ImageGallery gallery={gallery} onOpen={this.openLargeImage} />
         )}
+        {isLoading && <Loader />}
+        {gallery.length > 0 && <Button onClick={this.handleLoadMore} />}
+        {isModal && <Modal onClose={this.closeModal} imgUrl={imgUrl} />}
       </div>
     );
   }

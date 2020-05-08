@@ -1,39 +1,40 @@
-/* eslint-disable react/no-deprecated */
-/* eslint-disable react/sort-comp */
+/* eslint-disable react/prop-types */
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import styles from './Modal.module.css';
 
 export default class Modal extends Component {
-  state = {};
-
   static propTypes = {
-    onClick: PropTypes.func.isRequired,
-    children: PropTypes.node.isRequired,
+    imgUrl: PropTypes.string.isRequired,
   };
 
   componentDidMount() {
-    window.addEventListener('keydown', this.handleKeyPressESC);
+    window.addEventListener('keydown', this.handleKeyDown);
   }
 
-  // eslint-disable-next-line camelcase
-  UNSAFE_componentWillMount() {
-    window.removeEventListener('keydown', this.handleKeyPressESC);
+  componentWillUnmount() {
+    window.removeEventListener('keydown', this.handleKeyDown);
   }
 
-  handleKeyPressESC = e => {
-    const { onClick } = this.props;
-    if (e.keyCode === 27) {
-      onClick();
+  handleKeyDown = ({ code }) => {
+    if (code === 'Escape') {
+      this.props.onClose();
+    }
+  };
+
+  closeModalByClick = ({ target, currentTarget }) => {
+    if (target === currentTarget) {
+      this.props.onClose();
     }
   };
 
   render() {
-    const { onClick, children } = this.props;
-
+    const { imgUrl } = this.props;
     return (
-      <div className={styles.Overlay} onClick={onClick} role="presentation">
-        <div className={styles.Modal}>{children}</div>
+      <div onClick={this.closeModalByClick} className={styles.Overlay}>
+        <div className={styles.Modal}>
+          {imgUrl && <img src={imgUrl} alt="img" />}
+        </div>
       </div>
     );
   }
