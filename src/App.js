@@ -1,3 +1,4 @@
+/* eslint-disable react/destructuring-assignment */
 import React, { Component } from 'react';
 import Button from './componеnts/Button/Button';
 import ImageGallery from './componеnts/ImageGallery/ImagеGallеry';
@@ -6,6 +7,7 @@ import Modal from './componеnts/Modal/Modal';
 import Searchbar from './componеnts/Searchbar/Searchbar';
 import getImages from './componеnts/Utils/ImagеApi';
 import styles from './styles.module.css';
+import ErrorNotification from './componеnts/ErrorNotification/ErrorNotification';
 
 export default class App extends Component {
   state = {
@@ -15,6 +17,7 @@ export default class App extends Component {
     isLoading: false,
     isModal: false,
     imgUrl: '',
+    error: null,
   };
 
   componentDidUpdate(prevProps, prevState) {
@@ -22,6 +25,12 @@ export default class App extends Component {
     if (prevState.page !== page || prevState.query !== query) {
       this.getDataByParams({ query, page });
     }
+    /* if (!this.state.loading) {
+    window.scrollTo({
+      top: document.documentElement.scrollHeight,
+      behavior: 'smooth',
+    });}
+    */
   }
 
   getDataByParams = ({ query, page }) => {
@@ -34,10 +43,10 @@ export default class App extends Component {
       .catch(error => {
         // eslint-disable-next-line react/no-unused-state
         this.setState({ error });
-        console.log(error);
       })
       .finally(() => {
         this.setState({ isLoading: false });
+        this.scrolling();
       });
   };
 
@@ -48,6 +57,9 @@ export default class App extends Component {
   handleLoadMore = () => {
     const { page } = this.state;
     this.setState({ page: page + 1 });
+  };
+
+  scrolling = () => {
     window.scrollTo({
       top: document.documentElement.scrollHeight,
       behavior: 'smooth',
@@ -64,10 +76,11 @@ export default class App extends Component {
   };
 
   render() {
-    const { gallery, isModal, isLoading, imgUrl } = this.state;
+    const { gallery, error, isModal, isLoading, imgUrl } = this.state;
     return (
       <div className={styles.App}>
         <Searchbar onSubmit={this.handleSearch} />
+        {error && <ErrorNotification text={error.message} />}
         {gallery.length > 0 && (
           <ImageGallery gallery={gallery} onOpen={this.openLargeImage} />
         )}

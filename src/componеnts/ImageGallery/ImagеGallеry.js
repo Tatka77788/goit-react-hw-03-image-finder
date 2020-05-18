@@ -6,12 +6,12 @@ import styles from './ImageGallery.module.css';
 const ImageGallery = ({ gallery, onOpen }) => {
   return (
     <ul className={styles.ImageGallery}>
-      {gallery.map(({ id, webformatURL, largeImageURL, tags }) => (
+      {gallery.map(el => (
         <ImageGalleryItem
-          key={id}
-          webformatURL={webformatURL}
-          largeImageURL={largeImageURL}
-          tags={tags}
+          key={el.id}
+          webformatURL={el.webformatURL}
+          largeImageURL={el.largeImageURL}
+          tags={el.tags}
           onOpen={onOpen}
         />
       ))}
@@ -20,7 +20,7 @@ const ImageGallery = ({ gallery, onOpen }) => {
 };
 
 ImageGallery.propTypes = {
-  gallery: PropTypes.arrayOf(PropTypes.object).isRequired,
+  gallery: PropTypes.arrayOf(PropTypes.shape({})).isRequired,
   onOpen: PropTypes.func.isRequired,
 };
 export default ImageGallery;
