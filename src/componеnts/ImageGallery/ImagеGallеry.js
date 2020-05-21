@@ -1,3 +1,4 @@
+/* eslint-disable no-shadow */
 import React from 'react';
 import PropTypes from 'prop-types';
 import ImageGalleryItem from '../ImageGalleryItem/ImagеGallеryItеm';
@@ -9,10 +10,9 @@ const ImageGallery = ({ gallery, onOpen }) => {
       {gallery.map(el => (
         <ImageGalleryItem
           key={el.id}
-          webformatURL={el.webformatURL}
-          largeImageURL={el.largeImageURL}
-          tags={el.tags}
+          gallery={el}
           onOpen={onOpen}
+          largeImageURL={el.largeImageURL}
         />
       ))}
     </ul>

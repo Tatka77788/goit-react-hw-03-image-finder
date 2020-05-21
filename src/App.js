@@ -35,6 +35,7 @@ export default class App extends Component {
 
   getDataByParams = ({ query, page }) => {
     const { gallery } = this.state;
+    const scrollHeight = page > 1 ? document.documentElement.scrollHeight : 0;
     this.setState({ isLoading: true });
     return getImages({ page, query })
       .then(({ data }) =>
@@ -46,7 +47,10 @@ export default class App extends Component {
       })
       .finally(() => {
         this.setState({ isLoading: false });
-        this.scrolling();
+        window.scrollTo({
+          top: scrollHeight,
+          behavior: 'smooth',
+        });
       });
   };
 
@@ -57,13 +61,6 @@ export default class App extends Component {
   handleLoadMore = () => {
     const { page } = this.state;
     this.setState({ page: page + 1 });
-  };
-
-  scrolling = () => {
-    window.scrollTo({
-      top: document.documentElement.scrollHeight,
-      behavior: 'smooth',
-    });
   };
 
   openLargeImage = largeImgUrl => {

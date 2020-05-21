@@ -1,23 +1,30 @@
+/* eslint-disable no-undef */
+/* eslint-disable react/prop-types */
 import React from 'react';
 import PropTypes from 'prop-types';
 import styles from './ImageGalleryItem.module.css';
 
-const ImageGalleryItem = ({ webformatURL, largeImageURL, tags, onOpen }) => {
+const ImageGalleryItem = ({ gallery, onOpen }) => {
   return (
-    <li className={styles.ImageGalleryItem}>
+    <li className={styles.ImageGalleryItem} role="presentation">
       <img
-        src={webformatURL}
-        alt={tags}
-        onClick={() => onOpen(largeImageURL)}
+        src={gallery.webformatURL}
+        alt={gallery.tags}
+        id={gallery.id}
+        onClick={() => onOpen(gallery.largeImageURL)}
         className={styles.ImageGalleryItem_image}
       />
     </li>
   );
 };
+
 ImageGalleryItem.propTypes = {
-  webformatURL: PropTypes.string.isRequired,
-  largeImageURL: PropTypes.string.isRequired,
-  tags: PropTypes.string.isRequired,
+  gallery: PropTypes.shape({
+    webformatURL: PropTypes.string.isRequired,
+    largeImageURL: PropTypes.string.isRequired,
+    tags: PropTypes.string.isRequired,
+    id: PropTypes.number.isRequired,
+  }).isRequired,
   onOpen: PropTypes.func.isRequired,
 };
 export default ImageGalleryItem;
