@@ -25,17 +25,18 @@ export default class App extends Component {
     if (prevState.page !== page || prevState.query !== query) {
       this.getDataByParams({ query, page });
     }
-    /* if (!this.state.loading) {
-    window.scrollTo({
-      top: document.documentElement.scrollHeight,
-      behavior: 'smooth',
-    });}
-    */
+    if (prevState.query !== query && query.length > 12) {
+      setTimeout(() => {
+        window.scrollTo({
+          top: document.documentElement.scrollHeight,
+          behavior: 'smooth',
+        });
+      }, 1000);
+    }
   }
 
   getDataByParams = ({ query, page }) => {
     const { gallery } = this.state;
-    const scrollHeight = page > 1 ? document.documentElement.scrollHeight : 0;
     this.setState({ isLoading: true });
     return getImages({ page, query })
       .then(({ data }) =>
@@ -45,13 +46,11 @@ export default class App extends Component {
         // eslint-disable-next-line react/no-unused-state
         this.setState({ error });
       })
-      .finally(() => {
-        this.setState({ isLoading: false });
-        window.scrollTo({
-          top: scrollHeight,
-          behavior: 'smooth',
-        });
-      });
+      .finally(() =>
+        setTimeout(() => {
+          this.setState({ isLoading: false });
+        }, 500),
+      );
   };
 
   handleSearch = e => {

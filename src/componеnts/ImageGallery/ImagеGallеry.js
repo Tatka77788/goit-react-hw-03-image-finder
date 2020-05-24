@@ -20,7 +20,12 @@ const ImageGallery = ({ gallery, onOpen }) => {
 };
 
 ImageGallery.propTypes = {
-  gallery: PropTypes.arrayOf(PropTypes.shape({})).isRequired,
+  gallery: PropTypes.arrayOf(
+    PropTypes.shape({
+      id: PropTypes.number.isRequired,
+      largeImageURL: PropTypes.string.isRequired,
+    }),
+  ).isRequired,
   onOpen: PropTypes.func.isRequired,
 };
 export default ImageGallery;
