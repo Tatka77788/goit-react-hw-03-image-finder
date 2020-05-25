@@ -21,11 +21,11 @@ export default class App extends Component {
   };
 
   componentDidUpdate(prevProps, prevState) {
-    const { page, query } = this.state;
+    const { page, query, gallery } = this.state;
     if (prevState.page !== page || prevState.query !== query) {
       this.getDataByParams({ query, page });
     }
-    if (prevState.query !== query && query.length > 12) {
+    if (prevState.gallery !== gallery && gallery.length > 12) {
       setTimeout(() => {
         window.scrollTo({
           top: document.documentElement.scrollHeight,
